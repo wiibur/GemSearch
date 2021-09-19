@@ -1,0 +1,751 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/">
+  <Script file="GemFinder.lua"/>
+  <!-- Here the Scripts that have to be Executed -->
+  <Frame name="GemFinder_GeneralScripts" hidden="true">
+    <Scripts>
+      <OnLoad> GemFinder_OnLoad(); </OnLoad>
+      <OnEvent>
+        GemFinder_OnEvent(event, arg1, arg2);
+      </OnEvent>
+    </Scripts>
+  </Frame>
+
+  <GameTooltip name="GemFinderTooltip" inherits="GameTooltipTemplate" parent="UIParent" hidden="true"/>
+
+  <Button name="GemFinderItem_ParentTemplate" virtual="true" hidden="false">
+    <Size>
+      <AbsDimension x="512" y="30"/>
+    </Size>
+    <HighlightTexture file="Interface\QuestFrame\UI-QuestTitleHighlight" alphaMode="ADD"/>
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture name="$parent_Icon">
+          <Size>
+            <AbsDimension x="28" y="28"/>
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+              <Offset>
+                <AbsDimension x="1" y="-1"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </Texture>
+        <FontString name="$parent_Name" inherits="GameFontNormal" justifyH="LEFT">
+          <Size>
+            <AbsDimension x="205" y="12"/>
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="$parent_Icon" relativePoint="TOPRIGHT">
+              <Offset>
+                <AbsDimension x="3" y="0"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </FontString>
+        <FontString name="$parent_SourceCaption" inherits="GameFontNormalSmall" justifyH="LEFT">
+          <Size>
+            <AbsDimension x="205" y="10"/>
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="$parent_Name" relativePoint="TOPRIGHT">
+              <Offset>
+                <AbsDimension x="90" y="-1"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </FontString>
+        <FontString name="$parent_SourceText" inherits="GameFontNormalSmall" justifyH="LEFT">
+          <Size>
+            <AbsDimension x="205" y="10"/>
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="$parent_Name" relativePoint="TOPRIGHT">
+              <Offset>
+                <AbsDimension x="145" y="-1"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </FontString>
+        <FontString name="$parent_SourceItemCaption" inherits="GameFontNormalSmall" justifyH="LEFT">
+          <Size>
+            <AbsDimension x="160" y="10"/>
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="$parent_Name" relativePoint="TOPRIGHT">
+              <Offset>
+                <AbsDimension x="90" y="-15"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </FontString>
+        <Texture name="$parent_SourceItemIcon">
+          <Size>
+            <AbsDimension x="12" y="12"/>
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="$parent_Name" relativePoint="TOPRIGHT">
+              <Offset>
+                <AbsDimension x="145" y="-15"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </Texture>
+        <FontString name="$parent_SourceItemName" inherits="GameFontNormalSmall" justifyH="LEFT">
+          <Size>
+            <AbsDimension x="160" y="10"/>
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="$parent_Name" relativePoint="TOPRIGHT">
+              <Offset>
+                <AbsDimension x="159" y="-15"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </FontString>
+        <FontString name="$parent_Extra" inherits="GameFontNormalSmall" justifyH="LEFT">
+          <Size>
+            <AbsDimension x="405" y="10"/>
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="$parent_Name" relativePoint="BOTTOMLEFT">
+              <Offset>
+                <AbsDimension x="0" y="-1"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </FontString>
+        <FontString name="$parent_ItemID" inherits="GameFontNormalSmall" justifyH="RIGHT" hidden="true" text="333333">
+          <Size>
+            <AbsDimension x="45" y="12"/>
+          </Size>
+          <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="$parent_Name" relativePoint="BOTTOMLEFT">
+              <Offset>
+                <AbsDimension x="0" y="-1"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
+  </Button>
+
+  <Button name="GemFinderItem_Template" inherits="GemFinderItem_ParentTemplate" virtual="true" hidden="false">
+    <Scripts>
+      <OnLoad>
+        self:RegisterForClicks("LeftButtonDown", "RightButtonDown");
+      </OnLoad>
+      <OnEnter>
+        GemFinderItem_OnEnter(self);
+      </OnEnter>
+      <OnLeave>
+        GemFinderItem_OnLeave();
+      </OnLeave>
+      <OnClick>
+        GemFinderItem_OnClick(self);
+      </OnClick>
+      <OnShow>
+        self:SetFrameLevel( (self:GetParent()):GetFrameLevel() + 1 );
+      </OnShow>
+    </Scripts>
+  </Button>
+
+  <Frame name="GemFinderMinimapButtonFrame" parent="Minimap" enableMouse="true" hidden="false" frameStrata="LOW" >
+    <Size>
+      <AbsDimension x="32" y="32"/>
+    </Size>
+    <Anchors>
+      <Anchor point="TOPLEFT" relativeTo="Minimap" relativePoint="RIGHT">
+        <Offset>
+          <AbsDimension x="2" y="0"/>
+        </Offset>
+      </Anchor>
+    </Anchors>
+    <Frames>
+      <Button name="GemFinderMinimapButton">
+        <Size>
+          <AbsDimension x="32" y="32"/>
+        </Size>
+        <Anchors>
+          <Anchor point="TOPLEFT">
+            <Offset>
+              <AbsDimension x="0" y="0"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <NormalTexture file="Interface\AddOns\GemSearch\GemFinderMapIcon"/>
+        <PushedTexture file="Interface\AddOns\GemSearch\GemFinderMapIcon"/>
+        <HighlightTexture alphaMode="ADD" file="Interface\Minimap\UI-Minimap-ZoomButton-Highlight"/>
+        <Scripts>
+          <OnLoad>
+            self:RegisterForClicks("LeftButtonDown", "RightButtonDown");
+          </OnLoad>
+          <OnClick>
+            GemFinderMinimapButton_OnClick(self, button);
+
+          </OnClick>
+        </Scripts>
+      </Button>
+    </Frames>
+    <Scripts>
+      <OnLoad>
+        GemFinderMinimapButton_Init();
+
+      </OnLoad>
+      <OnEvent>
+
+      </OnEvent>
+    </Scripts>
+  </Frame>
+
+  <Frame name="GemFinderOptionsFrame" toplevel="true" frameStrata="DIALOG" movable="true" enableMouse="true" hidden="true" parent="UIParent" enableKeyboard="true" >
+    <Size>
+      <AbsDimension x="300" y="200"/>
+    </Size>
+    <Anchors>
+      <Anchor point="CENTER"/>
+    </Anchors>
+    <Layers>
+			<Layer level="BACKGROUND">
+				<Texture>
+					<Color a=".7" r="0" g="0" b="0" />
+				</Texture>
+      </Layer>
+    </Layers>
+    <Backdrop bgFile="Interface/Tooltips/UI-Tooltip-Background" edgeFile="Interface/DialogFrame/UI-DialogBox-Border" tile="true">
+      <BackgroundInsets>
+        <AbsInset left="11" right="12" top="12" bottom="11"/>
+      </BackgroundInsets>
+      <TileSize>
+        <AbsValue val="32"/>
+      </TileSize>
+      <EdgeSize>
+        <AbsValue val="32"/>
+      </EdgeSize>
+    </Backdrop>
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture name="$parentHeader" file="Interface\DialogFrame\UI-DialogBox-Header">
+          <Size>
+            <AbsDimension x="256" y="64"/>
+          </Size>
+          <Anchors>
+            <Anchor point="TOP">
+              <Offset>
+                <AbsDimension x="0" y="12"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </Texture>
+        <FontString inherits="GameFontNormal" text="Options">
+          <Anchors>
+            <Anchor point="TOP">
+              <Offset>
+                <AbsDimension x="0" y="0"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
+    <Frames>
+      <CheckButton name="$parentMinimap" inherits="OptionsCheckButtonTemplate">
+        <Anchors>
+          <Anchor point="TOPLEFT">
+            <Offset>
+              <AbsDimension x="40" y="-30"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnLoad>
+            getglobal(self:GetName().."Text"):SetText("Show Minimap Icon");
+          </OnLoad>
+          <OnClick>
+            if GemFinderOptions["MinimapButton"] then
+            GemFinderOptions["MinimapButton"] = false;
+            else
+            GemFinderOptions["MinimapButton"] = true;
+            end
+            GemFinderMinimapButton_Init();
+          </OnClick>
+        </Scripts>
+      </CheckButton>
+      <Slider name="GemFinder_MinimapPosSlider" inherits="OptionsSliderTemplate">
+        <Size>
+          <AbsDimension x="220" y="16"/>
+        </Size>
+        <Anchors>
+          <Anchor point="TOP">
+            <Offset>
+              <AbsDimension x="0" y="-80" />
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnLoad>
+            getglobal(self:GetName().."Text"):SetText("Position :");
+            getglobal(self:GetName().."High"):SetText();
+            getglobal(self:GetName().."Low"):SetText();
+            GemFinder_MinimapPosSlider:SetMinMaxValues(0,360);
+            GemFinder_MinimapPosSlider:SetValueStep(1);
+          </OnLoad>
+          <OnValueChanged>
+            GemFinderOptions["MinimapButtonAngle"] = GemFinder_MinimapPosSlider:GetValue();
+            GemFinderMinimapButton_Init();
+          </OnValueChanged>
+        </Scripts>
+      </Slider>
+      <Slider name="GemFinder_ScaleSlider" inherits="OptionsSliderTemplate">
+        <Size>
+          <AbsDimension x="220" y="16"/>
+        </Size>
+        <Anchors>
+          <Anchor point="TOP">
+            <Offset>
+              <AbsDimension x="0" y="-130" />
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnLoad>
+            getglobal(self:GetName().."Text"):SetText("Scale :");
+            getglobal(self:GetName().."High"):SetText("100%");
+            getglobal(self:GetName().."Low"):SetText("1%");
+            GemFinder_ScaleSlider:SetMinMaxValues(0,1);
+            GemFinder_ScaleSlider:SetValueStep(0.01);
+          </OnLoad>
+          <OnValueChanged>
+            GemFinderOptions["Scale"] = GemFinder_ScaleSlider:GetValue();
+            GemFinderScale_Init();
+          </OnValueChanged>
+        </Scripts>
+      </Slider>
+      <Button name="$parentDone" inherits="OptionsButtonTemplate" text="Done">
+        <Anchors>
+          <Anchor point="BOTTOM">
+            <Offset>
+              <AbsDimension x="0" y="20"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            GemFinderOptions_Toggle();
+          </OnClick>
+        </Scripts>
+      </Button>
+    </Frames>
+    <Scripts>
+      <OnLoad>
+        GemFinderOptions_OnLoad();
+        <!--GemFinderOptionsFrame:SetBackdropColor(0, 0, 0, 1);-->
+      </OnLoad>
+    </Scripts>
+  </Frame>
+
+
+
+  <Frame name="GemFinderForm" toplevel="true" frameStrata="DIALOG" movable="true" enableMouse="true" hidden="true" parent="UIParent" enableKeyboard="true" >
+    <Size>
+      <AbsDimension x="600" y="600"/>
+    </Size>
+    <Anchors>
+      <Anchor point="CENTER"/>
+    </Anchors>
+    <!--<Backdrop bgFile="Interface\Tooltips\UI-Tooltip-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
+      <EdgeSize val="32"/>
+      <TileSize val="32"/>
+      <BackgroundInsets left="11" right="12" top="12" bottom="11"/>
+    </Backdrop>-->
+    <Layers>
+			<Layer level="BACKGROUND">
+				<Texture>
+					<Color a=".7" r="0" g="0" b="0" />
+				</Texture>
+      </Layer>
+    </Layers>
+    <Frames>
+      <ScrollFrame name="GemListScrollBar" inherits="FauxScrollFrameTemplate">
+        <Size>
+          <AbsDimension x="515" y="450"/>
+        </Size>
+        <Anchors>
+          <Anchor point="BOTTOM" relativeTo="GemFinderForm" relativePoint="BOTTOM">
+            <Offset>
+              <AbsDimension x="0" y="71"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnVerticalScroll>
+            FauxScrollFrame_OnVerticalScroll(self, offset, 16, GemListScrollBar_Update);
+          </OnVerticalScroll>
+          <OnShow>
+            GemListScrollBar_Update()
+          </OnShow>
+        </Scripts>
+        <ScrollChild>
+					<Frame name="GemListScrollBarScrollChildFrame">
+            <!--<Layers>
+        			<Layer level="BACKGROUND">
+        				<Texture>
+        					<Color a=".7" r="1" g="0" b="0" />
+        				</Texture>
+              </Layer>
+            </Layers>-->
+						<Size>
+							<AbsDimension x="515" y="450"/>
+						</Size>
+					</Frame>
+				</ScrollChild>
+      </ScrollFrame>
+      <Button name="GemFinderItem_1" inherits="GemFinderItem_Template" id="1">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+            <Offset>
+              <AbsDimension x="30" y="-80"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+      </Button>
+      <Button name="GemFinderItem_2" inherits="GemFinderItem_Template" id="2">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="GemFinderItem_1" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+      <Button name="GemFinderItem_3" inherits="GemFinderItem_Template" id="3">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="GemFinderItem_2" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+      <Button name="GemFinderItem_4" inherits="GemFinderItem_Template" id="4">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="GemFinderItem_3" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+      <Button name="GemFinderItem_5" inherits="GemFinderItem_Template" id="5">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="GemFinderItem_4" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+      <Button name="GemFinderItem_6" inherits="GemFinderItem_Template" id="6">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="GemFinderItem_5" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+      <Button name="GemFinderItem_7" inherits="GemFinderItem_Template" id="7">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="GemFinderItem_6" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+      <Button name="GemFinderItem_8" inherits="GemFinderItem_Template" id="8">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="GemFinderItem_7" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+      <Button name="GemFinderItem_9" inherits="GemFinderItem_Template" id="9">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="GemFinderItem_8" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+      <Button name="GemFinderItem_10" inherits="GemFinderItem_Template" id="10">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="GemFinderItem_9" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+      <Button name="GemFinderItem_11" inherits="GemFinderItem_Template" id="11">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="GemFinderItem_10" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+      <Button name="GemFinderItem_12" inherits="GemFinderItem_Template" id="12">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="GemFinderItem_11" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+      <Button name="GemFinderItem_13" inherits="GemFinderItem_Template" id="13">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="GemFinderItem_12" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+      <Button name="GemFinderItem_14" inherits="GemFinderItem_Template" id="14">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="GemFinderItem_13" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+      <Button name="GemFinderItem_15" inherits="GemFinderItem_Template" id="15">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="GemFinderItem_14" relativePoint="BOTTOMLEFT"/>
+        </Anchors>
+      </Button>
+
+      <Button name="GemFinderFrameCloseButton" inherits="UIPanelCloseButton">
+        <Anchors>
+          <Anchor point="TOPRIGHT" relativeTo="GemFinderForm" relativePoint="TOPRIGHT">
+            <Offset>
+              <AbsDimension x="-10" y="-10"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            GemFinderForm:Hide();
+          </OnClick>
+          <OnShow>
+            self:SetFrameLevel( (self:GetParent()):GetFrameLevel() + 1 );
+          </OnShow>
+        </Scripts>
+      </Button>
+      <Button name="$parent_Options" inherits="OptionsButtonTemplate" text="Options">
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="$parent" relativePoint="TOPLEFT">
+            <Offset>
+              <AbsDimension x="15" y="-15"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            GemFinderOptions_Toggle();
+          </OnClick>
+          <OnShow>
+            self:SetFrameLevel( (self:GetParent()):GetFrameLevel() + 1 );
+          </OnShow>
+        </Scripts>
+      </Button>
+
+      <Button name="GemFinderFrameSlotDropDown" inherits="UIDropDownMenuTemplate">
+        <Size>
+          <AbsDimension x="110" y="16"/>
+        </Size>
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="GemFinderForm" relativePoint="TOPLEFT">
+            <Offset>
+              <AbsDimension x="10" y="-52"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            GemFinderFrameSlotDropDown_OnClick(self);
+          </OnClick>
+          <OnShow>
+            GemFinderFrameSlotDropDown_OnShow();
+          </OnShow>
+        </Scripts>
+      </Button>
+
+      <Button name="GemFinderFrameStatDropDown" inherits="UIDropDownMenuTemplate">
+        <Size>
+          <AbsDimension x="200" y="16"/>
+        </Size>
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="GemFinderForm" relativePoint="TOPLEFT">
+            <Offset>
+              <AbsDimension x="170" y="-52"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            GemFinderFrameStatDropDown_OnClick(self);
+          </OnClick>
+          <OnShow>
+            GemFinderFrameStatDropDown_OnShow();
+          </OnShow>
+        </Scripts>
+      </Button>
+      <Button name="GemFinderFrameQualityDropDown" inherits="UIDropDownMenuTemplate">
+        <Size>
+          <AbsDimension x="100" y="16"/>
+        </Size>
+        <Anchors>
+          <Anchor point="TOPLEFT" relativeTo="GemFinderForm" relativePoint="TOPLEFT">
+            <Offset>
+              <AbsDimension x="420" y="-52"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            GemFinderFrameQualityDropDown_OnClick(self);
+          </OnClick>
+          <OnShow>
+            GemFinderFrameQualityDropDown_OnShow();
+          </OnShow>
+        </Scripts>
+      </Button>
+      <EditBox name="GemFinderDefaultFrameSearchBox" inherits="InputBoxTemplate" letters="100">
+        <Size>
+          <AbsDimension x="200" y="32"></AbsDimension>
+        </Size>
+        <Anchors>
+          <Anchor point="BOTTOM" relativeTo="$parent" relativePoint="BOTTOM">
+            <Offset>
+              <AbsDimension x="0" y="30"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnLoad>
+            self:SetAutoFocus(false);
+            self:SetTextInsets(0, 8, 0, 0);
+          </OnLoad>
+          <OnEnterPressed>
+            <!-- GemFinder_Search(self:GetText()); -->
+            self:ClearFocus();
+          </OnEnterPressed>
+        </Scripts>
+        <FontString name="GemFinderDefaultFrameSearchString" inherits="GameFontNormal"></FontString>
+      </EditBox>
+      <Button name="GemFinderDefaultFrameSearchButton" inherits="UIPanelButtonTemplate" parent="GemFinderDefaultFrameSearchBox" text="Search">
+        <Size>
+          <AbsDimension x="69" y="32"/>
+        </Size>
+        <Anchors>
+          <Anchor point="LEFT" relativePoint="RIGHT">
+            <Offset>
+              <AbsDimension x="1" y="0"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            GemFinder_Search(GemFinderDefaultFrameSearchBox:GetText());
+            GemFinderDefaultFrameSearchBox:ClearFocus();
+          </OnClick>
+        </Scripts>
+      </Button>
+      <Button name="GemFinderDefaultFrameSearchClearButton" inherits="UIPanelButtonTemplate" parent="GemFinderDefaultFrameSearchBox" text="Clear">
+        <Size>
+          <AbsDimension x="58" y="32"/>
+        </Size>
+        <Anchors>
+          <Anchor point="RIGHT" relativePoint="LEFT">
+            <Offset>
+              <AbsDimension x="-7" y="0"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+        <Scripts>
+          <OnClick>
+            GemFinderDefaultFrameSearchBox:SetText("");
+            GemFinderDefaultFrameSearchBox:ClearFocus();
+            GemFinder_ClearSearch();
+          </OnClick>
+        </Scripts>
+      </Button>
+      <Frame name="GemFinderForm_LootBackground">
+        <Size>
+          <AbsDimension x="515" y="515"/>
+        </Size>
+        <Anchors>
+          <Anchor point="BOTTOM" relativeTo="GemFinderForm" relativePoint="BOTTOM">
+            <Offset>
+              <AbsDimension x="0" y="65"/>
+            </Offset>
+          </Anchor>
+        </Anchors>
+      </Frame>
+    </Frames>
+    <Layers>
+      <Layer level="ARTWORK">
+        <Texture name="FrameHeader" file="Interface\DialogFrame\UI-DialogBox-Header">
+          <Size>
+            <AbsDimension x="425" y="64"/>
+          </Size>
+          <Anchors>
+            <Anchor point="TOP">
+              <Offset>
+                <AbsDimension x="0" y="12"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </Texture>
+        <FontString inherits="GameFontNormal" text="GEMFINDER_VERSION">
+          <Anchors>
+            <Anchor point="TOP">
+              <Offset>
+                <AbsDimension x="0" y="-1"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </FontString>
+        <FontString inherits="GameFontNormal" text="Created By Dominatorius (Fusion Of Light@EU-Azjol-Nerub)">
+          <Anchors>
+            <Anchor point="BOTTOM">
+              <Offset>
+                <AbsDimension x="0" y="17"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </FontString>
+        <FontString inherits="GameFontGreen" text="Updated for TBC Classic by Wiibur (TL@Herod)">
+          <Anchors>
+            <Anchor point="BOTTOM">
+              <Offset>
+                <AbsDimension x="0" y="5"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </FontString>
+        <FontString inherits="GameFontNormal" text="Socket :">
+          <Anchors>
+            <Anchor point="TOPLEFT">
+              <Offset>
+                <AbsDimension x="30" y="-38"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </FontString>
+        <FontString name="$parent_StatDesk" inherits="GameFontNormal" text="Stat :">
+          <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="GemFinderForm" relativePoint="TOPLEFT">
+              <Offset>
+                <AbsDimension x="190" y="-38"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </FontString>
+        <FontString name="$parent_QualityDesk" inherits="GameFontNormal" text="Minimum Rarity :">
+          <Anchors>
+            <Anchor point="TOPLEFT" relativeTo="GemFinderForm" relativePoint="TOPLEFT">
+              <Offset>
+                <AbsDimension x="440" y="-38"/>
+              </Offset>
+            </Anchor>
+          </Anchors>
+        </FontString>
+      </Layer>
+    </Layers>
+    <Scripts>
+      <OnLoad>
+        tinsert(UISpecialFrames,self:GetName());
+        self:RegisterForDrag("LeftButton");
+        self:SetMovable(1);
+        self:SetScale(GemFinderOptions["Scale"]);
+        <!--self:SetBackdropColor(0, 0, 0, 1);-->
+      </OnLoad>
+      <OnShow>
+        GemFinderForm_OnShow();
+      </OnShow>
+      <OnHide>
+        GemFinderForm_OnHide();
+      </OnHide>
+      <OnDragStart>
+        self:StartMoving();
+        self.isMoving = true;
+      </OnDragStart>
+      <OnDragStop>
+        self:StopMovingOrSizing();
+        self.isMoving = false;
+      </OnDragStop>
+    </Scripts>
+  </Frame>
+
+
+
+
+</Ui>

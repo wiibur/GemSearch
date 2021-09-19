@@ -1,0 +1,11 @@
+## Interface: 20502
+## Title: GemSearch
+## Notes: Use GemSearch to find the gems you need for your gear.
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariables: GemFinderOptions
+## Version: 1.0.0
+## Author: Wiibur
+## X-Localizations: enUS
+GemData.lua
+GemFinder.xml
