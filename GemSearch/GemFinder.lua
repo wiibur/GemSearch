@@ -59,9 +59,9 @@ function GemFinder_OnLoad()
   events:RegisterEvent("VARIABLES_LOADED");
   SELECTEDITEM = 0;
 
-  out("GemFinder Loaded...");
-  SLASH_GEMFINDER1 = "/gemfinder";
-  SLASH_GEMFINDER2 = "/gf";
+  out("GemSearch Loaded...");
+  SLASH_GEMFINDER1 = "/gemsearch";
+  SLASH_GEMFINDER2 = "/gs";
   SlashCmdList["GEMFINDER"] = function(msg)
 		GemFinder_SlashCommandHandler(msg);
   end
